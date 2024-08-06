@@ -1,8 +1,8 @@
 #![allow(overflowing_literals)]
 
-
 use std::ops::{Range, RangeInclusive};
 use std::u8;
+use RustOxidationLab::get_block_data;
 
 fn main() {
 
@@ -668,4 +668,32 @@ fn main() {
     let tt = multiply_bar("2", "2");
     print(tt);
 
+    // 通过二进制运行包引入库包
+    get_block_data();
+    
+}
+
+/// ```
+/// # // 使用#开头的行会在文档中被隐藏起来，但是依然会在文档测试中运行
+/// # fn try_main() -> Result<(), String> {
+/// let res = world_hello::compute::try_div(10, 0)?;
+/// # Ok(()) // returning from try_main
+/// # }
+/// # fn main() {
+/// #    try_main().unwrap();
+/// #
+/// # }
+/// ```
+/// # Panics
+///
+/// The function panics if the second argument is zero.
+///
+/// ```rust,should_panic
+/// // panics on division by zero
+/// world_hello::compute::div(10, 0);
+/// ```
+/// 
+pub fn div(x: i32, y: i32) -> i32 {
+    assert_ne!(y, 0);
+    x / y
 }
