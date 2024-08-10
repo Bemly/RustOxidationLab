@@ -4,3 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+enigo = "0.2.1"
+x11rb = "0.13.1"
+libc = "0.2.155"
+byteorder = "1.5.0"
