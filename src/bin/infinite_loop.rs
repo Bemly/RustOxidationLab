@@ -1,13 +1,26 @@
-use std::thread;
+use std::{io, thread};
 use std::time::Duration;
+
+fn current_cpu() -> Result<usize, io::Error> {
+    let ret = unsafe {
+        libc::sched_getcpu()
+    };
+
+    if ret < 0 {
+        Err(io::Error::last_os_error())
+    } else {
+        Ok(ret as usize)
+    }
+}
 fn main() {
     // 创建一个线程A
     let new_thread = thread::spawn(move || {
         // 再创建一个线程B
         thread::spawn(move || {
             loop {
-                println!("I am a new thread.");
+                print!("{}", current_cpu().unwrap());
             }
+
         })
     });
 

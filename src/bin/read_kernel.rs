@@ -12,10 +12,6 @@ fn main() {
 
     let mut dev_file = file_options.open("/dev/input/event7").unwrap();
 
-    // 计算鼠标轮询率
-    let checker = thread::spawn(move || {
-        
-    });
 
     loop {
 
