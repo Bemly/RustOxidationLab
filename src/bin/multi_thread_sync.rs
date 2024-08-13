@@ -1,11 +1,9 @@
 use std::fs::OpenOptions;
-use std::io::{self, stdin, stdout, Read, Write};
+use std::io::{stdin, stdout, Read, Write};
 use std::process::exit;
-use std::thread;
 use std::sync::mpsc;
+use std::thread;
 
-/// C 还在追我\
-/// 干嘛的：不需要换行来强行刷新缓存了！
 fn set_row_cacahe_mode(enable: bool) {
     let fd = libc::STDIN_FILENO;
     unsafe {
@@ -47,7 +45,7 @@ impl Position {
     }
 
     fn update(&mut self) {
-
+        todo!()
     }
 }
 
@@ -126,6 +124,7 @@ fn main() {
 
     // 读取鼠标数据 - 外围驱动
     let mut file = OpenOptions::new().read(true).open("/dev/input/event7").unwrap();
+    let mut keyboard = OpenOptions::new().read(true).open("/dev/input/event4").unwrap();
     loop {
 
         // timestamp-int              | timestamp-float         | type  | code  | value
@@ -145,6 +144,9 @@ fn main() {
         let evtype = u16::from_ne_bytes(packet[16..18].try_into().unwrap());
         let code = u16::from_ne_bytes(packet[18..20].try_into().unwrap());
         let value = i32::from_ne_bytes(packet[20..].try_into().unwrap());
+        
+        
+        
 
         // println!("Time: {}.{} type:{:#x} code:{:#x} value:{:#x}", tv_sec, tv_usec, evtype, code, value);
 
@@ -192,11 +194,15 @@ fn main() {
                         if position.0 > 1 {
                             position.0 -= 1;
                             print!("\x1b[1D")
+                        } else {
+                            print!("\x07")
                         }
                     } else { // 右
                         if position.0 < screen.0 {
                             position.0 += 1;
                             print!("\x1b[1C")
+                        } else {
+                            print!("\x07")
                         }
                     }
                 },
@@ -206,11 +212,15 @@ fn main() {
                             if position.1 > 1 {
                                 position.1 -= 1;
                                 print!("\x1b[1A")
+                            } else {
+                                print!("\x07")
                             }
                         } else { // 下
                             if position.1 < screen.1 {
                                 position.1 += 1;
                                 print!("\x1b[1B")
+                            } else {
+                                print!("\x07")
                             }
                         }
                     }
@@ -234,3 +244,55 @@ fn main() {
         stdout().flush().unwrap();
     }
 }
+/*
+Input device name: "ELAN260D:00 04F3:3163 Touchpad"
+Supported events:
+  Event type 0 (EV_SYN)
+  Event type 1 (EV_KEY)
+    Event code 272 (BTN_LEFT)
+    Event code 325 (BTN_TOOL_FINGER)
+    Event code 328 (BTN_TOOL_QUINTTAP)
+    Event code 330 (BTN_TOUCH)
+    Event code 333 (BTN_TOOL_DOUBLETAP)
+    Event code 334 (BTN_TOOL_TRIPLETAP)
+    Event code 335 (BTN_TOOL_QUADTAP)
+  Event type 3 (EV_ABS)
+    Event code 0 (ABS_X)
+      Value   3533
+      Min        0
+      Max     3684
+      Resolution      31
+    Event code 1 (ABS_Y)
+      Value    268
+      Min        0
+      Max     2186
+      Resolution      31
+    Event code 47 (ABS_MT_SLOT)
+      Value      0
+      Min        0
+      Max        4
+    Event code 53 (ABS_MT_POSITION_X)
+      Value      0
+      Min        0
+      Max     3684
+      Resolution      31
+    Event code 54 (ABS_MT_POSITION_Y)
+      Value      0
+      Min        0
+      Max     2186
+      Resolution      31
+    Event code 55 (ABS_MT_TOOL_TYPE)
+      Value      0
+      Min        0
+      Max        2
+    Event code 57 (ABS_MT_TRACKING_ID)
+      Value      0
+      Min        0
+      Max    65535
+  Event type 4 (EV_MSC)
+    Event code 5 (MSC_TIMESTAMP)
+Properties:
+  Property type 0 (INPUT_PROP_POINTER)
+  Property type 2 (INPUT_PROP_BUTTONPAD)
+Testing ... (interrupt to exit)
+ */
